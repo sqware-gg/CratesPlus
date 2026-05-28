@@ -1,6 +1,6 @@
 # CratesPlus
 
-**Get the plugin jar, setup help, and updates in the SQWARE Discord: [discord.sqware.gg](https://discord.sqware.gg).**
+**Join the SQWARE Discord: [discord.sqware.gg](https://discord.sqware.gg).**
 
 CratesPlus is a Minecraft crate plugin for Paper servers. It is a CrazyCrates and ExcellentCrates-style alternative for reward crates, crate keys, previews, cooldowns, weighted loot, and server store rewards.
 
