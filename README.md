@@ -1,8 +1,30 @@
 # CratesPlus
 
-CratesPlus adds configurable reward crates for Paper servers.
+CratesPlus is a Minecraft crate plugin for Paper servers. It is a CrazyCrates and ExcellentCrates-style alternative for reward crates, crate keys, previews, cooldowns, weighted loot, and server store rewards.
 
-Crates are defined in `config.yml`. Each crate supports weighted rewards, custom item and command rewards, virtual keys, physical key items, linked crate blocks, per-crate particles, cooldowns, Vault open costs, reward previews, mass opening, opening milestones, reward limits, PlaceholderAPI placeholders, and open-history logging.
+Use it when you want configurable crates without hiding the important behavior behind a GUI-only setup.
+
+## Features
+
+- Config-defined crates.
+- Weighted item and command rewards.
+- Virtual keys and physical key items.
+- Linked crate blocks.
+- Reward previews and crate browser.
+- Vault open costs.
+- Cooldowns, mass opening, opening milestones, and reward limits.
+- Per-crate particles.
+- PlaceholderAPI placeholders.
+- Open-history logging.
+- API events for crate opens, rewards, and key changes.
+
+## Requirements
+
+- Paper `26.1.2+`
+- Java `25+`
+- Optional: Vault
+- Optional: PlaceholderAPI
+- Maven
 
 ## Commands
 
@@ -32,53 +54,32 @@ Crates are defined in `config.yml`. Each crate supports weighted rewards, custom
 /cratesplus resetlimit <player> <crate> [reward|all]
 ```
 
+Aliases: `/crate`, `/keys`, `/cratesadmin`
+
 ## Permissions
 
 ```text
 cratesplus.use          - browse crates and view keys
 cratesplus.open         - open crates
-cratesplus.preview      - preview crate rewards
+cratesplus.preview      - preview rewards
 cratesplus.admin        - manage crates, keys, and crate blocks
 cratesplus.block.break  - break linked crate blocks
 ```
 
-## Reward Options
-
-## Per-Crate Particles
-
-Crates inherit the global `effects` particle settings unless a crate overrides them:
-
-```yaml
-crates:
-  gold:
-    particles:
-      enabled: true
-      type: FLAME
-      count: 6
-      offset-x: 0.35
-      offset-y: 0.25
-      offset-z: 0.35
-      speed: 0.01
-```
-
-Flat crate keys are also accepted, such as `particles-enabled`, `particle`, `particle-count`, and `particle-speed`.
-
-Rewards can use simple `material`/`amount` fields or an `item` section with name, lore, enchantments, flags, unbreakable state, and custom model data.
+## Reward Example
 
 ```yaml
 rewards:
   rare-sword:
-    display-name: "&#57F287Rare Sword"
+    display-name: "Rare Sword"
     item:
       material: DIAMOND_SWORD
       amount: 1
-      name: "&#57F287Rare Sword"
+      name: "Rare Sword"
       lore:
-        - "&7Won from a crate."
+        - "Won from a crate."
       enchantments:
         sharpness: 4
-      flags:
-        - HIDE_ENCHANTS
     give-item: true
     weight: 5
     rarity: RARE
@@ -95,11 +96,9 @@ rewards:
       global-limit: 100
 ```
 
-`player-period-limit: 1` with `player-period: 7d` means the player can win that specific reward once every 7 days. `global-period-limit` and `global-period` apply the same idea server-wide.
+## PlaceholderAPI
 
-## Placeholders
-
-Requires PlaceholderAPI.
+Common placeholders:
 
 ```text
 %cratesplus_keys_<crate>%
@@ -107,14 +106,21 @@ Requires PlaceholderAPI.
 %cratesplus_physical_keys_<crate>%
 %cratesplus_openings_<crate>%
 %cratesplus_cooldown_<crate>%
-%cratesplus_cooldown_seconds_<crate>%
-%cratesplus_next_milestone_<crate>%
-%cratesplus_reward_remaining_<crate>_<reward>%
-%cratesplus_reward_reset_<crate>_<reward>%
-%cratesplus_reward_reset_seconds_<crate>_<reward>%
-%cratesplus_reward_global_remaining_<crate>_<reward>%
-%cratesplus_reward_global_reset_<crate>_<reward>%
-%cratesplus_reward_global_reset_seconds_<crate>_<reward>%
 %cratesplus_crate_count%
 %cratesplus_block_count%
 ```
+
+Reward limit and reset placeholders are also available for per-player and global limits.
+
+## Build
+
+```powershell
+mvn package
+```
+
+The jar is written to `target/CratesPlus-0.1.0.jar`.
+
+## Support
+
+- Website: https://sqware.gg
+- Discord: https://discord.sqware.gg
