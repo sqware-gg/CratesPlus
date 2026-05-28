@@ -1,0 +1,363 @@
+# CratesPlus
+# Text fields support legacy color codes (&a) and hex colors (&#2b98fd).
+# Duration fields support readable values: 30s, 5m, 2h, 7d, 1w, daily, weekly, monthly.
+# Existing configs are never overwritten. If config-version is old, CratesPlus writes config-new.yml.
+config-version: 7
+
+storage:
+  # How often player keys, cooldowns, openings, reward limits, and crate block links are saved.
+  save-interval-seconds: 300
+  # How long timestamped reward-limit history is retained.
+  # Keep this equal to or longer than your largest player-period/global-period reward limit.
+  claim-history-retention: 90d
+
+logs:
+  # Writes one line per successful crate opening to the plugin data folder.
+  enabled: true
+  file: "open-history.log"
+
+keys:
+  # If true, openings consume virtual keys before physical key items.
+  virtual-first: true
+  # Material used for physical key items.
+  physical-key-material: TRIPWIRE_HOOK
+  # Material used for admin-given placeable crate items.
+  crate-item-material: CHEST
+
+opening:
+  # Upper bound for /crates open <crate> all and GUI Open All.
+  max-mass-open: 64
+  # If true, item rewards that do not fit in inventory drop at the player's location.
+  drop-overflow-items: true
+
+effects:
+  # Global crate block particles. Individual crates can override this under crates.<id>.particles.
+  particles-enabled: true
+  particle: ENCHANT
+  particle-interval-ticks: 20
+  particle-count: 8
+  particle-offset-x: 0.35
+  particle-offset-y: 0.25
+  particle-offset-z: 0.35
+  particle-speed: 0.01
+  sound-open: ENTITY_PLAYER_LEVELUP
+  sound-no-key: BLOCK_NOTE_BLOCK_BASS
+
+gui:
+  # Inventory titles. Per-crate preview/opening rows are configured on each crate.
+  # Lore templates support placeholders and conditional prefixes:
+  # [if_open_cost], [if_cooldown], [if_permission], [if_item], [if_commands], [if_broadcast], [if_requirements].
+  # Special expansion lines: [description] inserts crate description, [requirements] inserts reward requirement lines.
+  title-list: "&#2b98fdCrates"
+  title-preview: "&#2b98fdCrate Preview"
+  title-opening: "&#2b98fdOpening Crate"
+  list-crate-lore:
+    - "[description]"
+    - ""
+    - "&7Virtual Keys: &#57F287{virtual_keys}"
+    - "&7Physical Keys: &#57F287{physical_keys}"
+    - "[if_open_cost]&7Open Cost: &#FEE75C{open_cost}"
+    - "[if_cooldown]&7Cooldown: &f{cooldown}"
+    - "[if_permission]&7Permission: &f{permission}"
+    - ""
+    - "&#57F287Left-click to preview."
+    - "&#57F287Right-click to open one."
+  key-balance-lore:
+    - "&7Virtual: &#57F287{virtual_keys}"
+    - "&7Physical: &#57F287{physical_keys}"
+    - "&7Total: &f{total_keys}"
+  reward-lore:
+    - ""
+    - "&7Rarity: &f{rarity}"
+    - "&7Chance: &#2b98fd{chance}%"
+    - "&7Weight: &f{weight}"
+    - "[if_item]&7Item: &f{item}"
+    - "[if_commands]&7Commands: &f{commands}"
+    - "[if_broadcast]&#FEE75CBroadcast reward"
+    - "[if_requirements]"
+    - "[if_requirements][requirements]"
+  result-lore:
+    - ""
+    - "&7Rarity: &f{rarity}"
+    - "&7Won: &#57F287{count} time{plural}"
+    - "[if_item]&7Each: &f{item}"
+
+items:
+  # Lore for physical key items. Placeholders: {crate}, {crate_id}.
+  key-lore:
+    - "&7Crate: &f{crate}"
+    - "&7Right-click a matching crate block"
+    - "&7or use &f/crates open {crate_id}&7."
+  # Lore for crate block items given by /cratesplus givecrate. Placeholders: {crate}, {crate_id}.
+  crate-item-lore:
+    - "&7Place this block to create"
+    - "&7a linked &f{crate}&7 crate."
+
+announcements:
+  # Broadcast message used by rewards with broadcast: true.
+  # Placeholders: {player}, {uuid}, {crate}, {crate_id}, {reward}, {reward_id}, {amount}, {openings}.
+  reward-broadcast: "&f{player}&7 won &f{reward}&7 from &#2b98fd{crate}&7."
+
+messages:
+  # Command and interaction messages. Placeholders vary per message and are shown in each template.
+  prefix: "&#2b98fdCrates+ &8> &7"
+  no-permission: "&#ED4245You do not have permission to do that."
+  players-only: "&#ED4245Only players can use that."
+  invalid-player: "&#ED4245That player is not online."
+  invalid-crate: "&#ED4245That crate does not exist."
+  invalid-reward: "&#ED4245That reward does not exist."
+  invalid-amount: "&#ED4245Enter an amount from &f1 &#ED4245to &f{max}&#ED4245."
+  invalid-key-mode: "&#ED4245Use &fvirtual &#ED4245or &fphysical&#ED4245."
+  no-target-block: "&#ED4245Look at a block within 8 blocks first."
+  no-key: "&#ED4245You need a &f{crate} &#ED4245key."
+  not-enough-keys: "&#ED4245You only have &f{keys} &#ED4245keys for &f{crate}&#ED4245."
+  economy-unavailable: "&#ED4245No Vault economy provider is available."
+  not-enough-money: "&#ED4245You need &f{cost} &#ED4245to open that."
+  transaction-failed: "&#ED4245Economy transaction failed: &f{reason}"
+  cooldown: "&#ED4245You can open &f{crate} &#ED4245again in &f{time}&#ED4245."
+  crate-permission: "&#ED4245You do not meet the permission requirement for &f{crate}&#ED4245."
+  no-eligible-rewards: "&#ED4245No rewards are currently available from &f{crate}&#ED4245."
+  opened: "&7Opened &#2b98fd{crate}&7 and won &f{reward}&7."
+  opened-multiple: "&7Opened &#2b98fd{crate}&7 x&f{amount}&7. Results were shown in the opening menu."
+  milestone: "&7Milestone reached for &#2b98fd{crate}&7: &f{amount} openings&7."
+  keys: "&7Keys for &#2b98fd{crate}&7: virtual &f{virtual}&7, physical &f{physical}&7."
+  keys-all-empty: "&7You do not have any crate keys."
+  key-given: "&7Gave &f{amount} &#57F287virtual &7keys for &#2b98fd{crate}&7 to &f{player}&7."
+  physical-key-given: "&7Gave &f{amount} &#57F287physical &7keys for &#2b98fd{crate}&7 to &f{player}&7."
+  key-taken: "&7Removed &f{amount} &#ED4245virtual &7keys for &#2b98fd{crate}&7 from &f{player}&7."
+  physical-key-taken: "&7Removed &f{amount} &#ED4245physical &7keys for &#2b98fd{crate}&7 from &f{player}&7."
+  key-set: "&7Set &f{player}&7's &#2b98fd{crate} &7virtual keys to &f{amount}&7."
+  key-given-all: "&7Gave &f{amount} &7{mode} keys for &#2b98fd{crate}&7 to &f{players} &7online players."
+  crate-item-given: "&7Gave &f{amount} &#2b98fd{crate} &7crate block item(s) to &f{player}&7."
+  # Recipient notifications for admin actions.
+  key-received: "&7You received &f{amount} &#57F287virtual &7keys for &#2b98fd{crate}&7. Balance: &f{balance}&7."
+  physical-key-received: "&7You received &f{amount} &#57F287physical &7keys for &#2b98fd{crate}&7."
+  key-removed: "&f{amount} &#ED4245virtual &7keys for &#2b98fd{crate} &7were removed. Balance: &f{balance}&7."
+  physical-key-removed: "&f{amount} &#ED4245physical &7keys for &#2b98fd{crate} &7were removed."
+  key-balance-set: "&7Your &#2b98fd{crate} &7virtual key balance was set to &f{amount}&7."
+  crate-item-received: "&7You received &f{amount} &#2b98fd{crate} &7crate block item(s)."
+  cooldown-reset: "&7Reset &f{player}&7's cooldown for &#2b98fd{crate}&7."
+  cooldown-reset-all: "&7Reset all crate cooldowns for &f{player}&7."
+  openings-reset: "&7Reset &f{player}&7's opening count for &#2b98fd{crate}&7."
+  openings-reset-all: "&7Reset all opening counts for &f{player}&7."
+  reward-limit-reset: "&7Reset &f{player}&7's reward limit for &f{reward}&7 in &#2b98fd{crate}&7."
+  reward-limit-reset-all: "&7Reset &f{player}&7's reward limits for &#2b98fd{crate}&7."
+  block-set: "&7Linked this block to &#2b98fd{crate}&7."
+  block-removed: "&7Removed the crate block link."
+  block-protected: "&#ED4245That block is a crate. Use &f/cratesplus removeblock &#ED4245first."
+  saved: "&7Crate data saved."
+  reloaded: "&7Crates+ reloaded."
+  status: "&7Crates: &f{crates}&7. Linked blocks: &f{blocks}&7. Player records: &f{players}&7. Economy: &f{economy}&7."
+  help: |-
+    &fCrates+ Commands
+    &#2b98fd/crates &8- &7Open the crate browser
+    &#2b98fd/crates preview <crate> &8- &7Preview rewards
+    &#2b98fd/crates open <crate> [amount|all] &8- &7Open crate keys
+    &#2b98fd/crates keys [crate] &8- &7View your key balances
+  usage-open: "&7Use &#2b98fd/crates open <crate> [amount|all]&7."
+  usage-preview: "&7Use &#2b98fd/crates preview <crate>&7."
+  usage-admin: |-
+    &fCrates+ Admin Commands
+    &#2b98fd/cratesplus stats &8- &7Show storage and economy status
+    &#2b98fd/cratesplus reload &8- &7Reload config
+    &#2b98fd/cratesplus save &8- &7Save crate data
+    &#2b98fd/cratesplus givekey <player> <crate> <amount> [virtual|physical]
+    &#2b98fd/cratesplus takekey <player> <crate> <amount> [virtual|physical]
+    &#2b98fd/cratesplus setkey <player> <crate> <amount>
+    &#2b98fd/cratesplus giveall <crate> <amount> [virtual|physical]
+    &#2b98fd/cratesplus openfor <player> <crate> [amount] [force]
+    &#2b98fd/cratesplus givecrate <player> <crate> [amount]
+    &#2b98fd/cratesplus setblock <crate> &8- &7Link the block you are looking at
+    &#2b98fd/cratesplus removeblock &8- &7Unlink the block you are looking at
+    &#2b98fd/cratesplus listblocks [crate] &8- &7List linked blocks
+    &#2b98fd/cratesplus info <crate> &8- &7Inspect reward odds and settings
+    &#2b98fd/cratesplus simulate <crate> <rolls> &8- &7Sample reward distribution
+    &#2b98fd/cratesplus resetcooldown <player> [crate|all]
+    &#2b98fd/cratesplus resetopenings <player> [crate|all]
+    &#2b98fd/cratesplus resetlimit <player> <crate> [reward|all]
+
+# PlaceholderAPI placeholders:
+# %cratesplus_keys_<crate>%
+# %cratesplus_virtual_keys_<crate>%
+# %cratesplus_physical_keys_<crate>%
+# %cratesplus_openings_<crate>%
+# %cratesplus_cooldown_<crate>%
+# %cratesplus_cooldown_seconds_<crate>%
+# %cratesplus_next_milestone_<crate>%
+# %cratesplus_reward_remaining_<crate>_<reward>%
+# %cratesplus_reward_reset_<crate>_<reward>%
+# %cratesplus_reward_reset_seconds_<crate>_<reward>%
+# %cratesplus_reward_global_remaining_<crate>_<reward>%
+# %cratesplus_reward_global_reset_<crate>_<reward>%
+# %cratesplus_reward_global_reset_seconds_<crate>_<reward>%
+# %cratesplus_crate_count%
+# %cratesplus_block_count%
+
+crates:
+  # Crate IDs should be lowercase and stable. They are used in keys, placeholders, data, and crate blocks.
+  basic:
+    # Display content used in GUI, keys, messages, and placeholders.
+    display-name: "&#2b98fdBasic Crate"
+    description:
+      - "&7Reliable starter rewards."
+      - "&7Weighted rewards, keys, commands, and milestones."
+    icon: CHEST
+    key-name: "&#2b98fdBasic Key"
+    crate-item-name: "&#2b98fdBasic Crate"
+    # Optional permission required to open this crate normally.
+    permission: ""
+    # Per-crate cooldown after a successful non-admin opening.
+    cooldown-seconds: 5
+    # Vault cost per opening. Set 0.0 to disable economy cost.
+    open-cost: 0.0
+    # GUI rows, clamped from 1 to 6. Preview/opening inventories use one row for controls.
+    preview-rows: 6
+    opening-rows: 3
+    # If false, this crate can only be opened one key at a time.
+    allow-mass-open: true
+    # Optional per-crate particle override. Omit this section to inherit the global effects values.
+    particles:
+      enabled: true
+      type: ENCHANT
+      count: 8
+      offset-x: 0.35
+      offset-y: 0.25
+      offset-z: 0.35
+      speed: 0.01
+    rewards:
+      iron:
+        # display-name is used in GUIs, messages, broadcasts, and logs.
+        # It is not applied to the physical item. Use item.name or name to rename the item itself.
+        display-name: "&f16 Iron Ingots"
+        # Simple item form. Use item: for advanced name/lore/enchantments/custom model data.
+        material: IRON_INGOT
+        amount: 16
+        # If false, only commands/broadcast/events run; no item is given.
+        give-item: true
+        # Weighted odds are reward weight divided by the sum of eligible reward weights.
+        weight: 45
+        rarity: COMMON
+        commands: []
+        broadcast: false
+      diamonds:
+        display-name: "&#57F2873 Diamonds"
+        item:
+          material: DIAMOND
+          amount: 3
+          lore:
+            - "&7A bright reward from the Basic Crate."
+        give-item: true
+        weight: 18
+        rarity: RARE
+        commands: []
+        broadcast: true
+      emeralds:
+        display-name: "&#57F2876 Emeralds"
+        material: EMERALD
+        amount: 6
+        give-item: true
+        weight: 25
+        rarity: UNCOMMON
+        commands: []
+        broadcast: false
+      speed:
+        display-name: "&#FEE75C30 XP Levels"
+        material: EXPERIENCE_BOTTLE
+        amount: 1
+        give-item: false
+        weight: 12
+        rarity: EPIC
+        commands:
+          - "xp add {player} 30 levels"
+        broadcast: true
+        requirements:
+          # Reward eligibility gates. All configured requirements must pass.
+          # permission / permissions: player permissions required for this reward.
+          # worlds: world names where this reward can roll.
+          # min-openings: player must have at least this many previous crate openings.
+          # max-openings: reward stops rolling once the player reaches this many openings.
+          # one-time: shorthand for a lifetime player limit of 1.
+          # player-limit/global-limit: lifetime per-player or server-wide win limits.
+          # player-period-limit + player-period: rolling per-player limit, e.g. 1 per 7d.
+          # global-period-limit + global-period: rolling server-wide limit.
+          min-openings: 2
+    milestones:
+      10:
+        repeatable: true
+        message: "&7You opened &f10 &#2b98fdBasic Crates&7 and earned a milestone bonus."
+        commands:
+          - "give {player} diamond 2"
+  gold:
+    display-name: "&#FEE75CGold Crate"
+    description:
+      - "&7Higher-value rewards with an open cost."
+      - "&7Use Vault economy for paid openings."
+    icon: GOLD_BLOCK
+    key-name: "&#FEE75CGold Key"
+    crate-item-name: "&#FEE75CGold Crate"
+    permission: ""
+    cooldown-seconds: 15
+    open-cost: 100.0
+    preview-rows: 6
+    opening-rows: 3
+    allow-mass-open: true
+    particles:
+      enabled: true
+      type: FLAME
+      count: 6
+      offset-x: 0.35
+      offset-y: 0.25
+      offset-z: 0.35
+      speed: 0.01
+    rewards:
+      gold:
+        display-name: "&#FEE75C32 Gold Ingots"
+        material: GOLD_INGOT
+        amount: 32
+        give-item: true
+        weight: 40
+        rarity: COMMON
+        commands: []
+        broadcast: false
+      enchanted-apple:
+        display-name: "&#FEE75CEnchanted Golden Apple"
+        material: ENCHANTED_GOLDEN_APPLE
+        amount: 1
+        give-item: true
+        weight: 4
+        rarity: LEGENDARY
+        commands: []
+        broadcast: true
+        requirements:
+          # Server-wide lifetime cap for this reward.
+          global-limit: 100
+          # Example: each player can win this specific reward once per week.
+          player-period-limit: 1
+          player-period: 7d
+      netherite:
+        display-name: "&#EB459E2 Netherite Ingots"
+        material: NETHERITE_INGOT
+        amount: 2
+        give-item: true
+        weight: 10
+        rarity: EPIC
+        commands: []
+        broadcast: true
+      command:
+        display-name: "&#57F287Server Command Reward"
+        material: COMMAND_BLOCK_MINECART
+        amount: 1
+        give-item: false
+        weight: 16
+        rarity: RARE
+        commands:
+          - "give {player} emerald_block 2"
+        broadcast: true
+        requirements:
+          permission: "cratesplus.reward.gold.command"
+    milestones:
+      5:
+        repeatable: false
+        message: "&7Gold crate streak bonus unlocked."
+        commands:
+          - "give {player} gold_block 1"

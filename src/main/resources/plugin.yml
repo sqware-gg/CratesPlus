@@ -1,0 +1,43 @@
+name: CratesPlus
+version: 0.1.0
+main: dev.cratesplus.CratesPlusPlugin
+api-version: '26.1.2'
+author: SQWARE / Conflict
+website: https://sqware.gg
+description: Configurable crates with keys, crate blocks, previews, cooldowns, and weighted rewards.
+softdepend:
+  - Vault
+  - PlaceholderAPI
+commands:
+  crates:
+    description: Browse, preview, and open Crates+ crates.
+    usage: /crates [preview|open|keys|help]
+    aliases:
+      - crate
+      - keys
+  cratesplus:
+    description: Manage Crates+.
+    usage: /cratesplus [stats|reload|save|givekey|takekey|setkey|giveall|openfor|givecrate|setblock|removeblock|info|simulate]
+    aliases:
+      - cratesadmin
+permissions:
+  cratesplus.use:
+    description: Allows opening the crates browser and viewing keys.
+    default: true
+  cratesplus.open:
+    description: Allows opening crates.
+    default: true
+  cratesplus.preview:
+    description: Allows previewing crate rewards.
+    default: true
+  cratesplus.admin:
+    description: Allows all Crates+ administrative commands.
+    default: op
+    children:
+      cratesplus.use: true
+      cratesplus.open: true
+      cratesplus.preview: true
+      cratesplus.block.break: true
+  cratesplus.block.break:
+    description: Allows breaking linked crate blocks.
+    default: op
