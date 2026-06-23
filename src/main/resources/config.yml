@@ -118,7 +118,7 @@ messages:
   crate-permission: "&#ED4245You do not meet the permission requirement for &f{crate}&#ED4245."
   no-eligible-rewards: "&#ED4245No rewards are currently available from &f{crate}&#ED4245."
   opened: "&7Opened &#2b98fd{crate}&7 and won &f{reward}&7."
-  opened-multiple: "&7Opened &#2b98fd{crate}&7 x&f{amount}&7. Results were shown in the opening menu."
+  opened-multiple: "&7Opened &#2b98fd{crate}&7 x&f{amount}&7. Review the reward results."
   milestone: "&7Milestone reached for &#2b98fd{crate}&7: &f{amount} openings&7."
   keys: "&7Keys for &#2b98fd{crate}&7: virtual &f{virtual}&7, physical &f{physical}&7."
   keys-all-empty: "&7You do not have any crate keys."
@@ -151,11 +151,13 @@ messages:
   help: |-
     &fCrates+ Commands
     &#2b98fd/crates &8- &7Open the crate browser
+    &#2b98fd/crates text &8- &7List crates in chat
     &#2b98fd/crates preview <crate> &8- &7Preview rewards
-    &#2b98fd/crates open <crate> [amount|all] &8- &7Open crate keys
+    &#2b98fd/crates preview <crate> text &8- &7List rewards in chat
+    &#2b98fd/crates open <crate> [amount|all] [text] &8- &7Open crate keys
     &#2b98fd/crates keys [crate] &8- &7View your key balances
-  usage-open: "&7Use &#2b98fd/crates open <crate> [amount|all]&7."
-  usage-preview: "&7Use &#2b98fd/crates preview <crate>&7."
+  usage-open: "&7Use &#2b98fd/crates open <crate> [amount|all] [text]&7."
+  usage-preview: "&7Use &#2b98fd/crates preview <crate> [text]&7."
   usage-admin: |-
     &fCrates+ Admin Commands
     &#2b98fd/cratesplus stats &8- &7Show storage and economy status

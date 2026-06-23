@@ -1,7 +1,7 @@
 name: CratesPlus
 version: 0.1.0
 main: dev.cratesplus.CratesPlusPlugin
-api-version: '26.1.2'
+api-version: '26.2'
 author: SQWARE / Conflict
 website: https://sqware.gg
 description: Configurable crates with keys, crate blocks, previews, cooldowns, and weighted rewards.
@@ -11,7 +11,7 @@ softdepend:
 commands:
   crates:
     description: Browse, preview, and open Crates+ crates.
-    usage: /crates [preview|open|keys|help]
+    usage: /crates [list|text|preview|open|keys|help]
     aliases:
       - crate
       - keys

@@ -2,7 +2,7 @@
 
 **Join the SQWARE Discord: [discord.sqware.gg](https://discord.sqware.gg).**
 
-CratesPlus is a Minecraft crate plugin for Paper servers. It is a CrazyCrates and ExcellentCrates-style alternative for reward crates, crate keys, previews, cooldowns, weighted loot, and server store rewards.
+CratesPlus is a Minecraft crate plugin for Paper servers. It handles reward crates, crate keys, previews, cooldowns, weighted loot, and server store rewards.
 
 Use it when you want configurable crates without hiding the important behavior behind a GUI-only setup.
 
@@ -22,11 +22,11 @@ Use it when you want configurable crates without hiding the important behavior b
 
 ## Requirements
 
-- Paper `26.1.2+`
+- Paper `26.2+`
 - Java `25+`
 - Optional: Vault
 - Optional: PlaceholderAPI
-- Maven
+- Maven wrapper included
 
 ## Commands
 
@@ -117,7 +117,11 @@ Reward limit and reset placeholders are also available for per-player and global
 ## Build
 
 ```powershell
-mvn package
+.\mvnw.cmd package
 ```
 
 The jar is written to `target/CratesPlus-0.1.0.jar`.
+
+## License
+
+CratesPlus is licensed under the Apache License, Version 2.0.
